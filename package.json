@@ -1,0 +1,21 @@
+{
+  "name": "timurl",
+  "version": "1.0.0",
+  "description": "A URL shortener app. I guess it's also a pretty tiny fullstack app because the URLs will be stored in MongoDB. It'll use express this time to manage the app and a template might be used. Haven't decided yet.",
+  "main": "timurl.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node timurl.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Pherang@github.com/pherang/timurl.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pherang/timurl/issues"
+  },
+  "homepage": "https://github.com/pherang/timurl#readme"
+}
