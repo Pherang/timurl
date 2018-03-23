@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/pherang/timurl/issues"
   },
-  "homepage": "https://github.com/pherang/timurl#readme"
+  "homepage": "https://github.com/pherang/timurl#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
 }
