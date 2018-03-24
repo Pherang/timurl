@@ -13,7 +13,7 @@ MongoClient.connect(uri, function (err, client) {
   async function checkShortUrl(urlNumber) {
     let findings = await db.collection(collection).find({ timurlnumber: urlNumber})
     let answer = await findings.next()
-    debugger
+    
     return answer
   }
 
@@ -33,7 +33,7 @@ MongoClient.connect(uri, function (err, client) {
     let validUrl
     // Just check if the URL format is correct upto the first / or full domain e.g. map.cork.app.com, gold.com/gimme
     //thanks https://regexer.com gskinner for this to test our Regexes in a sandbox
-    let urlExpression = /http:\/\/(?:\w+)(?:\.\w+)+(?:\/|$)/i
+    let urlExpression = /https?:\/\/(?:\w+)(?:\.\w+)+(?:\/|$)/i
 
     if(urlExpression.test(url)) {
       validUrl = url
@@ -73,12 +73,14 @@ MongoClient.connect(uri, function (err, client) {
       // Retrieve URL from database
       async function insertUrl () {
         let urlNum = await genShortUrl(1234)
-        
+        debugger 
         doc.timurlnumber = urlNum
-        
+        debugger 
         db.collection(collection).insertOne(doc)
+        debugger
         let shortUrlObject = await db.collection(collection).find({ timurlnumber:urlNum })
         let answer = await shortUrlObject.next()
+        debugger
         console.log(answer)
         let resultsForUser = {}
         resultsForUser.fullurl = answer.fullurl
@@ -88,7 +90,10 @@ MongoClient.connect(uri, function (err, client) {
         res.end()
       }
       insertUrl()
-    } // End if statement validating URL
+    } else {
+     res.send('Invalid URL format') 
+     res.end() 
+    }// End if statement validating URL
   
 
   }) // end get short url api endpoint route
@@ -97,19 +102,19 @@ MongoClient.connect(uri, function (err, client) {
   app.get(/\/\d{4}$/, (req,res) => {
     
     let inputNumber = Number.parseInt(req.url.substring(1))
-    console.log(inputNumber)
+
     async function getShortUrl(timnumber){
       let resultObj = await checkShortUrl(timnumber)  
-      debugger
+      
       if (resultObj) {
         let fullurl = resultObj.fullurl
-        console.log(fullurl)
+        res.redirect(301, fullurl)
       } else {
         res.send('No URL found')
       }
       res.end()
     }
-    debugger
+
     getShortUrl(inputNumber)
   })
 
