@@ -28,19 +28,38 @@ MongoClient.connect(uri, function (err, client) {
     if(urlExpression.test(url)) {
       validUrl = url
       console.log('It is a valid url ' + validUrl)
+      
+      // full url and short to be stored in database
       let doc = {}
       let randomTimNumber
+
+      
       doc.fullurl = validUrl
 
-      // Create a random number and check to see if it is in the DB. If it is, it has to be regenerated.
-      randomTimNumber = Math.random()
-      console.log(randomTimNumber)
-      randomTimNumber = randomTimNumber * 10000
-      if (randomTimNumber < 1000) { randomTimNumber = randomTimNumber * 10 }
-      console.log(Math.floor(randomTimNumber))
-      doc.timurlnumber = Math.floor(randomTimNumber)
-    
-//      db.collection(collection).insertOne(doc) 
+      // Create a random number and check to if it is in the DB. If it is, it has to be regenerated. The number is the short URL
+      function genShortUrl() {
+        randomTimNumber = Math.random() * 10000
+        if (randomTimNumber < 100) { randomTimNumber = randomTimNumber * 100 }
+        if (randomTimNumber < 1000) { randomTimNumber = randomTimNumber * 10 }
+
+        console.log(Math.floor(randomTimNumber))
+        doc.timurlnumber = Math.floor(randomTimNumber)
+        if (!checkShortUrl()) {
+          genShortUrl()
+        } else {
+
+        }
+      }
+      // Retrieve URL from database
+      async function checkShortUrl() {
+        let findings = await db.collection(collection).find({ timurlnumber: doc.timurlnumber})
+        let answer = await findings.next()
+        return answer
+      }
+      
+
+
+      //db.collection(collection).insertOne(doc.timurlnumber) 
       res.send(validUrl)
     }
     
