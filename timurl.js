@@ -32,36 +32,51 @@ MongoClient.connect(uri, function (err, client) {
       // full url and short to be stored in database
       let doc = {}
       let randomTimNumber
-
       
       doc.fullurl = validUrl
 
       // Create a random number and check to if it is in the DB. If it is, it has to be regenerated. The number is the short URL
-      function genShortUrl() {
-        randomTimNumber = Math.random() * 10000
+      async function genShortUrl(testNumber) {
+        randomTimNumber = testNumber || Math.random() * 10000
         if (randomTimNumber < 100) { randomTimNumber = randomTimNumber * 100 }
         if (randomTimNumber < 1000) { randomTimNumber = randomTimNumber * 10 }
+        randomTimNumber = Math.floor(randomTimNumber)
+        console.log('Random URL is ' + randomTimNumber)
 
-        console.log(Math.floor(randomTimNumber))
-        doc.timurlnumber = Math.floor(randomTimNumber)
-        if (!checkShortUrl()) {
-          genShortUrl()
+        let result = await checkShortUrl(randomTimNumber)
+        console.log('Does the ' +randomTimNumber+ ' exist? ' + result)
+        
+        if (result) {
+          console.log('URL Found regenerating new URL')
+          debugger
+          // Recursive call to genShortUrl 
+          return (randomTimNumber = await genShortUrl())
         } else {
-
+          // If no matching short URL number is found then we can use the current one.
+          console.log('The number doesn\'t exist ')
+          debugger
+          console.log('Returning valid URL ' + randomTimNumber)
+          return randomTimNumber
         }
       }
       // Retrieve URL from database
-      async function checkShortUrl() {
-        let findings = await db.collection(collection).find({ timurlnumber: doc.timurlnumber})
+      async function checkShortUrl(urlNumber) {
+        let findings = await db.collection(collection).find({ timurlnumber: urlNumber})
         let answer = await findings.next()
         return answer
       }
-      
+      async function insertUrl () {
+        let urlNum = await genShortUrl(1234)
+        debugger
+        doc.timurlnumber = urlNum
+        debugger
+        console.log(doc)
+      }
 
-
-      //db.collection(collection).insertOne(doc.timurlnumber) 
+      insertUrl()
+     //db.collection(collection).insertOne(doc) 
       res.send(validUrl)
-    }
+    } // End if statement validating URL
     
     res.end()
 
