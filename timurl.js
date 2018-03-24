@@ -5,6 +5,7 @@ const express = require('express'),
 let uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/timmieurls'
 let dbName = 'timmieurls'
 let collection = 'urls'
+let hostname = process.env.APP_HOST || 'http://127.0.0.1:3000'
 MongoClient.connect(uri, function (err, client) {
   const db = client.db(dbName)
   app.get('/', (req,res) => {
@@ -70,15 +71,20 @@ MongoClient.connect(uri, function (err, client) {
         debugger
         doc.timurlnumber = urlNum
         debugger
-        console.log(doc)
-      }
+        db.collection(collection).insertOne(doc)
+        let shortUrlObject = await db.collection(collection).find({ timurlnumber:urlNum })
+        let answer = await shortUrlObject.next()
+        console.log(answer)
+        let resultsForUser = {}
+        resultsForUser.fullurl = answer.fullurl
+        resultsForUser.shorturl = hostname + answer.timurlnumber
 
+        res.send(resultsForUser)
+        res.end()
+      }
       insertUrl()
-     //db.collection(collection).insertOne(doc) 
-      res.send(validUrl)
     } // End if statement validating URL
     
-    res.end()
 
   }) // end api endpoint route
 
