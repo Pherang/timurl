@@ -4,7 +4,13 @@ const express = require('express'),
       PORT = process.env.PORT || 3000
 
 let uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/timmieurls'
-let dbName = 'timmieurls'
+
+// Local database config
+//let dbName = 'timmieurls'
+
+// heroku database config
+let dbName = 'heroku_dwmfsp7n'
+
 let collection = 'urls'
 let hostname = process.env.APP_HOST || 'http://127.0.0.1:3000'
 MongoClient.connect(uri, function (err, client) {
