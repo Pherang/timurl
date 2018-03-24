@@ -22,7 +22,7 @@ MongoClient.connect(uri, function (err, client) {
     let validUrl
     // Just check if the URL format is correct upto the first / or full domain e.g. map.cork.app.com, gold.com/gimme
     //let urlExpression = /http:\/\/(\w+)(\.\w+)+[/\s]/i;    //thanks https://regexer.com gskinner for this great tool!      
-    let urlExpression = /http:\/\/(\w+)(\.\w+)+[\/$]?/i
+    let urlExpression = /http:\/\/(?:\w+)(?:\.\w+)+(?:\/|$)/i
     console.log(urlExpression)
     console.log(url)
     console.log(urlExpression.test(url))
