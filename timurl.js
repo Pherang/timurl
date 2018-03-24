@@ -1,6 +1,7 @@
 const express = require('express'),
       MongoClient = require('mongodb').MongoClient,
       app = express();
+      PORT = process.env.PORT || 3000
 
 let uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/timmieurls'
 let dbName = 'timmieurls'
@@ -123,7 +124,7 @@ MongoClient.connect(uri, function (err, client) {
     res.end()
   })
 
-  let server = app.listen(3000, () => {
+  let server = app.listen(PORT, () => {
     let port = server.address().port
     console.log('Express server listening on port %s.', port)
   })
