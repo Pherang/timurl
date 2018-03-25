@@ -6,10 +6,10 @@ const express = require('express'),
 let uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/timmieurls'
 
 // Local database config
-//let dbName = 'timmieurls'
+let dbName = 'timmieurls'
 
 // heroku database config
-let dbName = 'heroku_dwmfsp7n'
+//let dbName = 'heroku_dwmfsp7n'
 
 let collection = 'urls'
 let hostname = process.env.APP_HOST || 'http://127.0.0.1:3000'
@@ -40,10 +40,10 @@ MongoClient.connect(uri, function (err, client) {
     let validUrl
     // Just check if the URL format is correct upto the first / or full domain e.g. map.cork.app.com, gold.com/gimme
     //thanks https://regexer.com gskinner for this to test our Regexes in a sandbox
-    let urlExpression = /https?:\/\/(?:\w+)(?:\.\w+)+(?:\/|$)/i
+    let urlExpression = /https?:\/\/(?:\w+)(?:[\.-]\w+)+(?:\/|$)/i
 
     if(urlExpression.test(url)) {
-      validUrl = url
+      validUrl = url.toLowerCase()
       console.log('It is a valid url ' + validUrl)
       
       // full url and short to be stored in database
