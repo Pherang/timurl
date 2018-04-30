@@ -1,7 +1,6 @@
 const express = require('express'),
       MongoClient = require('mongodb').MongoClient,
-      app = express();
-      PORT = process.env.PORT || 3000
+      app = express(); PORT = process.env.PORT || 3000
 
 let uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/timmieurls'
 
@@ -25,10 +24,8 @@ MongoClient.connect(uri, function (err, client) {
   }
 
   app.get('/', (req,res) => {
-   
     let msg = 'Hello, to use this service paste your url after http://timurl.herokuapp.com/tiny/' 
     msg += '<br>E.g http://timurl.herokuapp.com/tiny/https://developer.mozilla.org'
-
     res.send(msg)
   })
   
@@ -53,7 +50,7 @@ MongoClient.connect(uri, function (err, client) {
       doc.fullurl = validUrl
 
       // Create a random number and check to if it is in the DB. If it is, it has to be regenerated. The number is the short URL
-      async function genShortUrl(testNumber) {
+      async function generateShortUrl(testNumber) {
         randomTimNumber = testNumber || Math.random() * 10000
         if (randomTimNumber < 100) { randomTimNumber = randomTimNumber * 100 }
         if (randomTimNumber < 1000) { randomTimNumber = randomTimNumber * 10 }
@@ -77,17 +74,13 @@ MongoClient.connect(uri, function (err, client) {
           return randomTimNumber
         }
       }
-      // Retrieve URL from database
+      // 
       async function insertUrl () {
-        let urlNum = await genShortUrl(1234)
-        debugger 
+        let urlNum = await generateShortUrl()
         doc.timurlnumber = urlNum
-        debugger 
         db.collection(collection).insertOne(doc)
-        debugger
         let shortUrlObject = await db.collection(collection).find({ timurlnumber:urlNum })
         let answer = await shortUrlObject.next()
-        debugger
         console.log(answer)
         let resultsForUser = {}
         resultsForUser.fullurl = answer.fullurl
