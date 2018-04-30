@@ -11,7 +11,11 @@ let uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/timmieurls'
 let dbName = 'heroku_dwmfsp7n'
 
 let collection = 'urls'
+
+// URL for user to use with timmie url number
+// e.g. http://127.0.0.1:3000/1234 vs http://heroku.com/1234
 let hostname = process.env.APP_HOST || 'http://127.0.0.1:3000'
+
 MongoClient.connect(uri, function (err, client) {
   const db = client.db(dbName)
 
@@ -80,6 +84,7 @@ MongoClient.connect(uri, function (err, client) {
         doc.timurlnumber = urlNum
         db.collection(collection).insertOne(doc)
         let shortUrlObject = await db.collection(collection).find({ timurlnumber:urlNum })
+        // .next() iterates through the Mongo curser.
         let answer = await shortUrlObject.next()
         console.log(answer)
         let resultsForUser = {}
